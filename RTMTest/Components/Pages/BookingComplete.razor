@@ -1,0 +1,22 @@
+﻿@page "/BookingComplete"
+@attribute [RenderModeInteractiveServer]
+
+<h3>Booking Complete</h3>
+
+<p>You're in: @OrderEmail</p>
+
+<p>Check console for error that looks like this:</p>
+
+<img src="blazorerror.png"/>
+
+<script>
+    let orderEmail = '@OrderEmail';
+    console.log(orderEmail);
+</script>
+
+@code {
+    
+    [SupplyParameterFromQuery(Name="orderEmail")]
+    public string OrderEmail { get; set; }
+    
+}
