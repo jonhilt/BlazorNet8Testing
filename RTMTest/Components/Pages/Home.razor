@@ -1,7 +1,70 @@
 ﻿@page "/"
+@attribute [StreamRendering]
 
 <PageTitle>Home</PageTitle>
 
-<a href="/BookingComplete?orderEmail=a@b.com">
-    Click here
-</a>
+<form method="post" @formname="search" class="text-center my-4" @onsubmit="HandleSubmit" data-enhance>
+    <AntiforgeryToken/>
+    <InputText @bind-Value="SearchTerm" placeholder="Character name" class="form-control"/>
+    <input type="submit" value="Search" class="btn btn-primary mt-2"/>
+</form>
+
+<form method="post" @formname="character" @onSubmit="HandleCharacterAction" data-enhance>
+    <AntiforgeryToken/>
+
+    @if (_searchResults == null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+            @foreach (var result in _searchResults)
+            {
+                <div>
+                    <p>@result.Name</p>
+                    <button name="like" value="@result.Id">Like</button>
+                </div>
+            }
+        </div>
+    }
+
+</form>
+
+@code {
+
+    [SupplyParameterFromForm]
+    public string? SearchTerm { get; set; }
+
+    private List<SearchResult>? _searchResults;
+
+    private async Task HandleSubmit()
+    {
+        await Task.Delay(500);
+
+        _searchResults = new List<SearchResult>
+        {
+            new() { Id = 1, Name = "Test A" },
+            new() { Id = 2, Name = "Test B" },
+            new() { Id = 3, Name = "Test C" },
+        };
+    }
+
+    [SupplyParameterFromForm]
+    public int? Like { get; set; }
+
+    private void HandleCharacterAction()
+    {
+        @if (Like.HasValue)
+        {
+            Console.WriteLine(Like);
+        }
+    }
+
+    private class SearchResult
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
+}
